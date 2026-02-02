@@ -1,0 +1,23 @@
+# Keep Unity text files consistent
+*.meta      text eol=lf
+*.unity     text eol=lf
+*.prefab    text eol=lf
+*.asset     text eol=lf
+*.mat       text eol=lf
+*.controller text eol=lf
+*.anim      text eol=lf
+*.lighting  text eol=lf
+*.inputactions text eol=lf
+*.txt       text eol=lf
+*.shader    text eol=lf
+*.cginc     text eol=lf
+*.json      text eol=lf
+*.cs        text eol=lf
+
+# Treat these as binary
+*.png binary
+*.jpg binary
+*.fbx binary
+*.wav binary
+*.mp3 binary
+*.zip binary
