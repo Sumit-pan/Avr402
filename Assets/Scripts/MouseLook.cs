@@ -2,24 +2,28 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    public Transform playerBody; // drag Player here
+    public Transform playerBody;
     public float sensitivity = 120f;
-    public float pitchMin = -60f;
-    public float pitchMax = 70f;
+    public float minPitch = -70f;
+    public float maxPitch = 75f;
 
-    private float pitch;
+    float pitch;
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
     void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+        float mx = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        float my = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
 
-        // yaw: rotate player left/right
-        playerBody.Rotate(Vector3.up * mouseX);
+        playerBody.Rotate(Vector3.up * mx);
 
-        // pitch: rotate camera pivot up/down
-        pitch -= mouseY;
-        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
-        transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        pitch -= my;
+        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+        transform.localRotation = Quaternion.Euler(pitch, 0, 0);
     }
 }
