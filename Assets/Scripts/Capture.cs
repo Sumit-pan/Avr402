@@ -12,7 +12,7 @@ public class CaptureTrigger : MonoBehaviour
 
         triggered = true;
 
-        // Freeze movement for a moment
+        
         var cc = other.GetComponent<CharacterController>();
         if (cc) cc.enabled = false;
 
