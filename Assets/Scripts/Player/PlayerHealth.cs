@@ -8,7 +8,7 @@ public class PlayerHealth : MonoBehaviour
     public int currentHealth = 100;
 
     [Header("End UI")]
-    // public EndScreenManager endUI;
+   
     public DeathScreenManager deathUI;
     bool isDead;
 
@@ -44,12 +44,14 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
-        if (isDead) return;
-        isDead = true;
-        deathUI.ShowDeath();
-        UIManager.Instance?.ShowMessage("You died");
+    if (isDead) return;
+    isDead = true;
 
-        // if (endUI) endUI.Show(EndState.Death);
-        // else Debug.LogWarning("PlayerHealth: endUI not assigned!");
-    }
+    UIManager.Instance?.ShowMessage("You died"); // optional
+
+    if (deathUI)
+        deathUI.ShowDeath();
+    else
+        Debug.LogWarning("PlayerHealth: deathUI not assigned (Ending scene is handling UI).");
+}
 }

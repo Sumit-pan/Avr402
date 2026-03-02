@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance;
+    public static UIManager Instance {get; private set;}
 
     [Header("Interact Prompt")]
     public GameObject promptRoot;
@@ -57,6 +57,9 @@ public class UIManager : MonoBehaviour
 
         if (!messageText) return;
 
+        if (!messageText.gameObject.activeSelf)
+        messageText.gameObject.SetActive(true);
+
         if (msgRoutine != null) StopCoroutine(msgRoutine);
         msgRoutine = StartCoroutine(MessageRoutine(text, seconds));
     }
@@ -66,5 +69,7 @@ public class UIManager : MonoBehaviour
         messageText.text = text;
         yield return new WaitForSeconds(seconds);
         messageText.text = "";
+        messageText.gameObject.SetActive(false);
+        msgRoutine=null;
     }
 }

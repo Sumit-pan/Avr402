@@ -6,16 +6,21 @@ public class LanternPickupRay : MonoBehaviour, IInteractable
     bool picked;
 
     public void Interact()
-    {
-        if (picked) return;
-        UIManager.Instance?.ShowMessage("Picked up lantern");
-        picked = true;
+{
+    Debug.Log("Interact called"); // <- should appear no matter what
 
-        if (lanternOnPlayer)
-            lanternOnPlayer.SetActive(true);
+    if (picked) return;
 
-        gameObject.SetActive(false);
-    }
+    Debug.Log(UIManager.Instance == null ? "UIManager.Instance is NULL" : "UIManager.Instance OK");
+
+    UIManager.Instance?.ShowMessage("Picked up lantern");
+    picked = true;
+
+    if (lanternOnPlayer)
+        lanternOnPlayer.SetActive(true);
+
+    gameObject.SetActive(false);
+}
 
     public string GetPrompt()
     {

@@ -24,17 +24,19 @@ public class GhoulAI : MonoBehaviour
     private Transform player;
     private PlayerHealth playerHealth;
     private float nextAttackTime;
+    private bool wasChasing;
 
    
     private const string PARAM_SPEED = "Speed";
     private const string PARAM_ISCHASING = "IsChasing";
     private const string TRIG_ATTACK = "Attack";
+    public MonsterAudio monsterAudio;
 
     private void Awake()
     {
         if (!agent) agent = GetComponent<NavMeshAgent>();
         if (!animator) animator = GetComponentInChildren<Animator>();
-
+        if (!monsterAudio) monsterAudio = GetComponent<MonsterAudio>();
         
         agent.updateRotation = true;
         agent.updatePosition = true;
@@ -44,25 +46,34 @@ public class GhoulAI : MonoBehaviour
     }
 
     private void Start()
+{
+    GameObject p = GameObject.FindGameObjectWithTag(playerTag);
+    if (!p)
     {
-        GameObject p = GameObject.FindGameObjectWithTag(playerTag);
-        if (!p)
-        {
-            Debug.LogError($"GhoulAI: No GameObject found with tag '{playerTag}'.");
-            enabled = false;
-            return;
-        }
-
-        player = p.transform;
-
-        
-        playerHealth = p.GetComponent<PlayerHealth>()
-                   ?? p.GetComponentInParent<PlayerHealth>()
-                   ?? p.GetComponentInChildren<PlayerHealth>();
-
-        if (!playerHealth)
-            Debug.LogError("GhoulAI: PlayerHealth component NOT found on Player (or parent/child).");
+        Debug.LogError($"GhoulAI: No GameObject found with tag '{playerTag}'.");
+        enabled = false;
+        return;
     }
+
+    player = p.transform;
+
+    // Try to find PlayerHealth anywhere on that player object
+    playerHealth =
+        p.GetComponent<PlayerHealth>() ??
+        p.GetComponentInParent<PlayerHealth>() ??
+        p.GetComponentInChildren<PlayerHealth>();
+
+    if (!playerHealth)
+    {
+        Debug.LogError("GhoulAI: PlayerHealth component NOT found on Player (or parent/child).");
+        // Optional: disable attacking so it doesn't spam warnings
+        // enabled = false;
+        return;
+    }
+
+    // Optional: start idle loop once
+    monsterAudio?.PlayIdle();
+}
 
     private void Update()
     {
@@ -78,12 +89,14 @@ public class GhoulAI : MonoBehaviour
         {
             animator.SetFloat(PARAM_SPEED, agent.velocity.magnitude);
             animator.SetBool(PARAM_ISCHASING, chasing);
+            
         }
 
         if (!chasing)
         {
           
             agent.isStopped = false;
+            
             return;
         }
 
@@ -106,11 +119,15 @@ public class GhoulAI : MonoBehaviour
 
             TryAttack();
         }
+        if (chasing && !wasChasing) monsterAudio?.PlayChase();
+if (!chasing && wasChasing) monsterAudio?.PlayIdle();
+wasChasing = chasing;
     }
 
     private void TryAttack()
     {
         if (Time.time < nextAttackTime) return;
+
 
         nextAttackTime = Time.time + attackCooldown;
 
@@ -129,6 +146,9 @@ public class GhoulAI : MonoBehaviour
         if (playerHealth)
         {
             playerHealth.TakeDamage(damage);
+            monsterAudio?.PlayAttack();
+    monsterAudio?.PlayJumpscare();
+    CameraShake.Instance?.Shake(0.25f, 0.25f, 25);
             Debug.Log($"GhoulAI dealt {damage} damage. Player HP now {playerHealth.currentHealth}");
         }
         else

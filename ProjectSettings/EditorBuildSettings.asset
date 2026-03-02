@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Basement.unity
     guid: fed72bd569ec1024992b31702e48a386
   - enabled: 1
-    path: Assets/Scenes/GameComplete.unity
+    path: Assets/Scenes/EscapeEnding.unity
     guid: aad0a8744cc779b4aa8e5b81594bf0a1
   m_configObjects: {}
